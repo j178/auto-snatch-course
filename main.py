@@ -1,10 +1,10 @@
 # Author: John Jiang
 # Date  : 2016/7/6
-# print('test travis')
+
 import os
 
 from src import User
-from src.util import watch, WATCHING
+from src.util import watch, WATCHING_LIST
 
 watch_thread = watch()
 
@@ -15,11 +15,11 @@ def main():
 
     if not b:
         print(msg)
-
+        return
     print(u.major, u.grade)
 
     for i, c in enumerate(u.courses):
-        print('[{}] {} {} {}'.format(i, c.course_num, c.name, c.type, c.course_model_id))
+        print('[{}] {} '.format(i, c))
 
     choices = input('要选择的课程的序号(以空格分隔)>>>')
 
@@ -29,7 +29,8 @@ def main():
         try:
             c = u.courses[int(choice)]
         except ValueError:
-            print('invalid choice', choice)
+            print('不合法的选项', choice)
+            continue
 
         for i, task in enumerate(c.tasks):
             print('[{}] {} '.format(i, task))
@@ -43,7 +44,7 @@ def main():
         print(t.schedules)
 
         if input('是否监视此课(有退课时自动选择)(Y/n)?').strip() == 'Y':
-            WATCHING.append(t)
+            WATCHING_LIST.append(t)
 
     watch_thread.start()
     watch_thread.join()

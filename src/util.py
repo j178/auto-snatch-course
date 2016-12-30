@@ -15,7 +15,7 @@ ADAPTER_WITH_RETRY = requests.adapters.HTTPAdapter(
 _session = requests.session()
 _session.mount('http://', ADAPTER_WITH_RETRY)
 
-WATCHING = []
+WATCHING_LIST = []
 
 logging.basicConfig(level=logging.INFO,
                     format='[%(asctime)s] [%(levelname)s] %(message)s',
@@ -28,7 +28,7 @@ def watch():
 
     def _():
         while watch.watching:
-            for task in WATCHING:
+            for task in WATCHING_LIST:
                 task.select()
                 time.sleep(0.1)
             time.sleep(1)
@@ -43,7 +43,7 @@ def get(url, max_retries=float('inf'), timeout=0.1, **kwargs):
             r = _session.get(url, timeout=timeout, **kwargs)
             r.raise_for_status()
         except requests.RequestException as e:
-            print(e)
+            logging.error(e)
             tried += 1
             if tried >= max_retries:
                 raise
@@ -59,7 +59,7 @@ def post(url, data=None, json=None, max_retries=float('inf'), timeout=0.1, **kwa
             r = _session.post(url, data, json, timeout=timeout, **kwargs)
             r.raise_for_status()
         except requests.RequestException as e:
-            print(e)
+            logging.error(e)
             tried += 1
             if tried >= max_retries:
                 raise

@@ -5,7 +5,7 @@ import re
 import logging
 from .urls import *
 from .schedule import Schedule
-from .util import get, method_once, WATCHING
+from .util import get, method_once, WATCHING_LIST
 
 
 class Task:
@@ -108,11 +108,11 @@ class Task:
             code = match.group(1)
             if code == '1021':
                 logging.info('选课成功 %s', str(self))
-                WATCHING.remove(self)
+                WATCHING_LIST.remove(self)
                 return True
             elif code == '1022':
                 logging.error('已经选择此课程 %s', str(self))
-                WATCHING.remove(self)
+                WATCHING_LIST.remove(self)
                 return True
             elif code == '1023':
                 logging.warning('课程冲突 %s', str(self))
