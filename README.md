@@ -12,7 +12,7 @@ A simple sdk for auto snatching courses of NEU
 ## Usage
 Set environment variables `XK_ID` and `XK_PW` then run the `main.py` script.  
 
-Or change the line `u = User(os.getenv('XK_ID'), os.getenv('XK_PW'))` line of `main.py` with your id and password 
+Or change the  `u = User(os.getenv('XK_ID'), os.getenv('XK_PW'))` line of `main.py` to your id and password 
 explicity.
 
 ## TODO
