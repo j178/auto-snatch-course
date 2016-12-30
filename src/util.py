@@ -4,6 +4,7 @@
 import functools
 import threading
 import time
+import logging
 
 import requests
 import requests.adapters
@@ -15,22 +16,24 @@ _session = requests.session()
 _session.mount('http://', ADAPTER_WITH_RETRY)
 
 WATCHING = []
-CONTINUE_WATCHING = True
+
+logging.basicConfig(level=logging.INFO,
+                    format='[%(asctime)s] [%(levelname)s] %(message)s',
+                    datefmt='%H:%M:%S')
 
 
 def watch():
     """监视要抢的课，一旦有退课立马选上"""
+    watch.watching = True
 
     def _():
-        while CONTINUE_WATCHING:
+        while watch.watching:
             for task in WATCHING:
                 task.select()
-                time.sleep(1)
+                time.sleep(0.1)
             time.sleep(1)
 
-    t = threading.Thread(target=_)
-    t.start()
-    return t
+    return threading.Thread(target=_)
 
 
 def get(url, max_retries=float('inf'), timeout=0.1, **kwargs):

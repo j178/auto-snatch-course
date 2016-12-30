@@ -10,20 +10,14 @@ A simple sdk for auto snatching courses of NEU
 * requests
 
 ## Usage
-````python
-from src import User
+Set environment variables `XK_ID` and `XK_PW` then run the `main.py` script.  
 
-u = User(username,password)
-u.login()
-for course in u.courses:
-    for task in course.tasks:
-        print(task)
-````
+Or change the line `u = User(os.getenv('XK_ID'), os.getenv('XK_PW'))` line of `main.py` with your id and password 
+explicity.
+
 ## TODO
-- [ ] 监视退课 
+- [x] monitor courses 
 - [ ] add **multiple thread** login simultaneously
-- [ ] utilize more flexible design pattern
-- [ ] more simple and beautiful code
 - [ ] GUI 
 
 

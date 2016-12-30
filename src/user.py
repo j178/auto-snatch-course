@@ -1,7 +1,7 @@
 # Author: John Jiang
 # Date  : 2016/7/5
 import re
-
+import logging
 from .course import Course
 from .urls import *
 from .util import get, post, method_once
@@ -39,9 +39,9 @@ class User:
             'strPassword' : self.password
         }
 
+        logging.info('登录中: %s', self.num)
         r = post(LOGIN_URL, data)
 
-        # r.encoding = 'utf-8'
         pattern = re.compile(r'id="StudentName" value="(?P<name>.*?)".*?'
                              r'id="StudentNO" readonly value="(?P<num>.*?)".*?'
                              r'id="MajorName" readonly value="(?P<major>.*?)".*?'
@@ -53,18 +53,18 @@ class User:
             d = match.groupdict()
             for key in d:
                 setattr(self, key, d[key])
+            logging.info('登录成功: %s-%s-%s', self.name, self.major, self.grade)
             return True, ''
         else:
             match = re.search(r'<font color="#FF0000" size="2"><strong>(.*?)</strong></font>',
                               r.text)
             msg = match.group(1) if match  else 'Unknown Error'
-
-            # print(r.text)
-
+            logging.error('登录失败 %s', msg)
             return False, msg
 
     def logout(self):
         get(EXIT_URL)
+        logging.info('退出成功')
 
     def change_pwd(self, old, new):
         param = {
@@ -124,6 +124,7 @@ class User:
             'Section'    : ''
         }
         # 默认获取所有可选课程
+        logging.info('获取课程列表中')
         r = post(QUERY_COURSE_URL, data=data)
         pattern = re.compile(r'<tr id="ID\d+".*?QueryTaskInfo\(\'(?P<course_num>.+?)\',\'\d+\','
                              r'\'(?P<course_model_id>\d+)\'.*?'
@@ -133,6 +134,7 @@ class User:
         for p in pattern.finditer(r.text):
             c = Course(**p.groupdict())
             self._courses.append(c)
+        logging.info('课程列表获取成功')
 
     @property
     def courses(self, if_need='-1', course_kind4='-1', course_name='', course_mode_id=None):

@@ -2,6 +2,8 @@
 # Date  : 2016/7/6
 import re
 
+import logging
+
 from .task import Task
 from .urls import *
 from .util import get, method_once
@@ -66,6 +68,7 @@ class Course:
         }
 
         # todo 缓存
+        logging.info('获取课程 %s(%s) 的所有任务中', self.name, self.course_num)
         r = get(TASK_INFO_URL, params=params)
 
         pattern = re.compile(r'<td nowrap.*?\'(?P<task_id>.*?)\'.*?'
@@ -73,9 +76,13 @@ class Course:
                              r'<span.*?>(?P<description>.*?)&nbsp', re.DOTALL)
 
         for match in pattern.finditer(r.text):
-            self._tasks.append(Task(**match.groupdict(), course_num=self.course_num))
+            self._tasks.append(Task(**match.groupdict(), course=self))
+        logging.info('获取课程任务成功')
 
     @property
     def tasks(self):
         self._get_tasks()
         return self._tasks
+
+    def __str__(self):
+        return '[{}]-{}-{}'.format(self.course_num, self.name, self.type)
