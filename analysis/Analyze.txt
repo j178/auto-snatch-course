@@ -1,0 +1,26 @@
+xk_login与xk_exitselect.xkapprocess一样，是填写用户和密码的登录页
+
+xk_login_in_commit.xkappprocess 主页的框架
+
+XK_Exit.jsp name=ExitFrame 好像没有用到，而且也显示不出来
+
+XK_DISP_TOP_FRAME_TITLE.XKAPPPROCESS 页面顶部 name=topFrame，显示一些信息
+       学号：20144633 姓名：江航 专业：软件工程 年级：2014 登录时间：20:49:36
+
+XK_TopFrameright.jsp name=topright 没用，空的
+
+XK_DISP_LEFT_FRAME.XKAPPPROCESS  name=leftFrame 左侧的选项操作列表
+
+    XK_QUERY_COURSE.XKAPPPROCESS?Time=&QueryType=ALL name=_course 左侧中间的一个frame 显示课程列表
+
+
+    XK_GET_TASK_INFO_BY_COURSE.XKAPPPROCESS?Time=&QueryType=NONE name=_task 左侧下面的frame，显示课程对应的老师
+        XK_GET_TASK_INFO_BY_COURSE.XKAPPPROCESS?CourseNO=C3000000017&MajorLevel=05&GradeYear=2014&MajorNO=X080902
+        &CourseModelID=3&IfNeed=-1  点击课程之后实际访问的页面，填充到左侧下面的frame中
+
+XK_CourseInfoRightTop.jsp    name=righttopFrame 中间上部的一个frame,显示点击老师之后的课程的信息，相应的选课/统计等按钮也都在这里
+    XK_DISP_TASK_TURN.XKAPPPROCESS?Time=&XKTaskID=455288  点击老师之后实际访问的页面，填充到右侧上部的课程信息frame中
+
+
+XK_DISP_XK_RESULT.XKAPPPROCESS name=mainFrame 中间的frame,显示已经选了的课表
+    由XK_SELECTCOURSE等填充
