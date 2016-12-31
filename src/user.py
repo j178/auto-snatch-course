@@ -1,9 +1,10 @@
 # Author: John Jiang
 # Date  : 2016/7/5
-import re
 import logging
-from .course import Course
+import re
+
 from .urls import *
+from .course import Course
 from .util import get, post, method_once
 
 
@@ -28,12 +29,7 @@ class User:
     # todo 多线程同时抢滩登陆
     @method_once
     def login(self):
-        """
-        登录选课网站
-
-        :return: 二元组，第一个表示登录是否成功，第二个表示失败的原因
-        :rtype: tuple(bool,str)
-        """
+        """登录选课网站"""
         data = {
             'strStudentNO': self.num,
             'strPassword' : self.password
@@ -53,7 +49,8 @@ class User:
             d = match.groupdict()
             for key in d:
                 setattr(self, key, d[key])
-            logging.info('登录成功: %s-%s-%s', self.name, self.major, self.grade)
+
+            logging.info('登录成功: %s', str(self))
             return True, ''
         else:
             match = re.search(r'<font color="#FF0000" size="2"><strong>(.*?)</strong></font>',
@@ -152,3 +149,6 @@ class User:
 
     def secure_password(self):
         """每5分钟改一次密码"""
+
+    def __str__(self):
+        return '{} {} {} {} {}'.format(self.name, self.num, self.major, self.grade, self.class_)

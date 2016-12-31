@@ -4,8 +4,8 @@ import re
 
 import logging
 
-from .task import Task
 from .urls import *
+from .task import Task
 from .util import get, method_once
 
 
@@ -52,12 +52,7 @@ class Course:
 
     @method_once
     def _get_tasks(self):
-        """
-        获取课程对应的老师列表
-
-        :return: generate Task对象
-        :rtype generator of Task
-        """
+        """获取课程对应的老师列表"""
         params = {
             'CourseNO'     : self.course_num,
             'CourseModelID': self.course_model_id,
@@ -67,7 +62,6 @@ class Course:
             'IfNeed'       : self.if_need
         }
 
-        # todo 缓存
         logging.info('获取课程 %s(%s) 的所有任务中', self.name, self.course_num)
         r = get(TASK_INFO_URL, params=params)
 

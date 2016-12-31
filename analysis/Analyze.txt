@@ -5,7 +5,7 @@ xk_login_in_commit.xkappprocess 主页的框架
 XK_Exit.jsp name=ExitFrame 好像没有用到，而且也显示不出来
 
 XK_DISP_TOP_FRAME_TITLE.XKAPPPROCESS 页面顶部 name=topFrame，显示一些信息
-       学号：20144633 姓名：江航 专业：软件工程 年级：2014 登录时间：20:49:36
+       学号：xxx 姓名：xx 专业：xxx 年级：xxxx 登录时间：20:49:36
 
 XK_TopFrameright.jsp name=topright 没用，空的
 

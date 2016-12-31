@@ -2,6 +2,7 @@
 # Date  : 2016/7/6
 
 import os
+import sys
 
 from src import User
 from src.util import watch, WATCHING_LIST
@@ -10,7 +11,14 @@ watch_thread = watch()
 
 
 def main():
-    u = User(os.getenv('XK_ID'), os.getenv('XK_PW'))
+    if len(sys.argv) >= 3:
+        id = sys.argv[1]
+        pw = sys.argv[2]
+    else:
+        id = os.getenv('XK_ID')
+        pw = os.getenv('XK_PW')
+
+    u = User(id, pw)
     b, msg = u.login()
 
     if not b:
@@ -21,14 +29,12 @@ def main():
     for i, c in enumerate(u.courses):
         print('[{}] {} '.format(i, c))
 
-    choices = input('要选择的课程的序号(以空格分隔)>>>')
-
-    choices = choices.split(' ')
+    choices = input('要选择的课程的序号(以空格分隔)>>>').split(' ')
 
     for choice in choices:
         try:
             c = u.courses[int(choice)]
-        except ValueError:
+        except (ValueError, IndexError):
             print('不合法的选项', choice)
             continue
 
@@ -37,6 +43,8 @@ def main():
 
         if len(c.tasks) == 1:
             t = c.tasks[0]
+        elif len(c.tasks) == 0:
+            continue
         else:
             select_task = input('要选择的任务的序号>>>')
             t = c.tasks[int(select_task)]
@@ -45,6 +53,8 @@ def main():
 
         if input('是否监视此课(有退课时自动选择)(Y/n)?').strip() == 'Y':
             WATCHING_LIST.append(t)
+        else:
+            t.select()
 
     watch_thread.start()
     watch_thread.join()

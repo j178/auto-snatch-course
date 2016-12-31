@@ -14,5 +14,5 @@ class Schedule:
         self.campus = kwargs.get('campus')
 
     def __str__(self):
-        return self.weekday + '|' + self.section + '|' + self.span_of_weeks + '|' + self.week_type + '|' \
-               + self.teacher + '|' + self.classroom + '|' + self.building + '|' + self.campus
+        return (self.weekday + '|' + self.section + '|' + self.span_of_weeks + '|' + self.week_type + '|' +
+                self.teacher + '|' + self.classroom + '|' + self.building + '|' + self.campus)

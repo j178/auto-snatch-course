@@ -14,7 +14,6 @@ ADAPTER_WITH_RETRY = requests.adapters.HTTPAdapter(
 
 _session = requests.session()
 _session.mount('http://', ADAPTER_WITH_RETRY)
-
 WATCHING_LIST = []
 
 logging.basicConfig(level=logging.INFO,
@@ -29,9 +28,10 @@ def watch():
     def _():
         while watch.watching:
             for task in WATCHING_LIST:
-                task.select()
+                if task.select():
+                    WATCHING_LIST.remove(task)
                 time.sleep(0.1)
-            time.sleep(1)
+            time.sleep(0.1)
 
     return threading.Thread(target=_)
 
