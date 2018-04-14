@@ -2,38 +2,69 @@
 # Date  : 2016/7/6
 # auto retry
 import functools
+import logging
 import threading
 import time
-import logging
 
 import requests
 import requests.adapters
 
 ADAPTER_WITH_RETRY = requests.adapters.HTTPAdapter(
-        max_retries=requests.adapters.Retry(total=10, status_forcelist=[400, 403, 404, 408, 500, 502]))
+    max_retries=requests.adapters.Retry(total=10, status_forcelist=[400, 403, 404, 408, 500, 502]))
 
 _session = requests.session()
 _session.mount('http://', ADAPTER_WITH_RETRY)
-WATCHING_LIST = []
 
 logging.basicConfig(level=logging.INFO,
                     format='[%(asctime)s] [%(levelname)s] %(message)s',
                     datefmt='%H:%M:%S')
+logging.root.disabled = True
 
 
-def watch():
-    """监视要抢的课，一旦有退课立马选上"""
-    watch.watching = True
+def enable_logging():
+    logging.root.disabled = False
 
-    def _():
-        while watch.watching:
-            for task in WATCHING_LIST:
-                if task.select():
-                    WATCHING_LIST.remove(task)
+
+class Watcher(threading.Thread):
+    def __init__(self, *args, **kwargs):
+        super().__init__(self, *args, **kwargs)
+        self.daemon = False
+        self._stop_event = threading.Event()
+        self._task_list = []
+        self._task_list_lock = threading.RLock()
+        self.start()
+
+    def stop(self):
+        self._stop_event.set()
+
+    def stopped(self):
+        return self._stop_event.is_set()
+
+    def run(self):
+        while not self.stopped():
+            with self._task_list_lock:
+                tasks = self._task_list[:]
+
+            for task in tasks:
+                try:
+                    if task.select():
+                        self.remove_task(task)
+                except Exception:
+                    pass
                 time.sleep(0.1)
-            time.sleep(0.1)
 
-    return threading.Thread(target=_)
+            time.sleep(0.5)
+
+    def add_task(self, task):
+        with self._task_list_lock:
+            self._task_list.append(task)
+
+        if not self.is_alive():
+            self.start()
+
+    def remove_task(self, task):
+        with self._task_list_lock:
+            self._task_list.remove(task)
 
 
 def get(url, max_retries=float('inf'), timeout=0.1, **kwargs):
